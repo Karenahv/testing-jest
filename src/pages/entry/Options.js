@@ -5,40 +5,52 @@ import ScoopOption from "./ScoopOption";
 import ToopingOption from "./ToopingOption";
 import {response} from "msw";
 import AlertBanner from "../common/AlertBanner";
+import {pricePerItem} from "../../constants";
+import {useOrderDetails} from "../../contexts/OrderDetails";
 
 
-const Options =({optionType})=>{
-    const[items, setItems] = useState([])
+const Options = ({optionType}) => {
+    const [items, setItems] = useState([])
     const [error, setError] = useState(false)
+    const [orderDetails, updateItemCount] = useOrderDetails()
     // optionType is 'scoops' or 'toopings'
-    useEffect(()=>{
-            axios
+    useEffect(() => {
+        axios
             .get(`http://localhost:3030/${optionType}`)
             .then((response) => setItems(response.data))
-            .catch((error)=>{
+            .catch((error) => {
                 //handle error response
                 setError(true)
             })
 
-    },[optionType])
+    }, [optionType])
 
-    if(error){
+    if (error) {
         return (
             <AlertBanner></AlertBanner>
         )
     }
     //TODO: replace null with ToopingOption when available
     const ItemComponent = optionType === 'scoops' ? ScoopOption : ToopingOption;
-    const optionsItems = items.map(item=>(
+    const title = optionType[0].toUpperCase() + optionType.slice(1).toLowerCase()
+    const optionsItems = items.map(item => (
         <ItemComponent
-            key={item.id}
-            name={item.name}
-            imagePath={item.imagePath}/>
-            ))
-    return(
-        <div>
-            {optionsItems}
-        </div>
+            key={item?.id}
+            name={item?.name}
+            imagePath={item?.imagePath}
+            updateItemCount={(itemName, newItemCount)=>updateItemCount(itemName, newItemCount, optionType)}
+        />
+    ))
+    return (
+        <>
+            <h2>{title}</h2>
+            <p>{pricePerItem[optionType]} each</p>
+            <p>
+                {title} total: {orderDetails.totals[optionType]}</p>
+            <Row>
+                {optionsItems}
+            </Row>
+        </>
     )
 }
 
