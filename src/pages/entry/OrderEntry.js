@@ -5,7 +5,7 @@ const OrderEntry = ()=>{
     return (
         <div>
             <Options optionType='scoops'/>
-            <Options optionType='toopings'/>
+            <Options optionType='toppings'/>
         </div>
     )
 }

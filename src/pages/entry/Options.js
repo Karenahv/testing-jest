@@ -1,6 +1,6 @@
 import axios from 'axios'
 import {useEffect, useState} from "react";
-import Row from 'react-bootstrap'
+import Row from 'react-bootstrap/Row'
 import ScoopOption from "./ScoopOption";
 import ToopingOption from "./ToopingOption";
 import {response} from "msw";
@@ -13,7 +13,7 @@ const Options = ({optionType}) => {
     const [items, setItems] = useState([])
     const [error, setError] = useState(false)
     const [orderDetails, updateItemCount] = useOrderDetails()
-    // optionType is 'scoops' or 'toopings'
+    // optionType is 'scoops' or 'toppings'
     useEffect(() => {
         axios
             .get(`http://localhost:3030/${optionType}`)
@@ -44,7 +44,7 @@ const Options = ({optionType}) => {
     return (
         <>
             <h2>{title}</h2>
-            <p>{pricePerItem[optionType]} each</p>
+            <p>${pricePerItem[optionType]}.00 each</p>
             <p>
                 {title} total: {orderDetails.totals[optionType]}</p>
             <Row>
