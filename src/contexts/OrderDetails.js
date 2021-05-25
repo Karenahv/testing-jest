@@ -1,14 +1,8 @@
 import {createContext, useContext, useState, useMemo, useEffect} from "react";
 import {pricePerItem} from "../constants";
+import {formatCurrency} from "../utilities";
 
-// format number as currency
-function formatCurrency(amount){
-    return new Intl.NumberFormat('en-US', {
-        style:'currency',
-        currency: 'USD',
-        minimumFractionDigits: 2,
-    }).format(amount)
-}
+
 
 const OrderDetails = createContext();
 
@@ -21,7 +15,6 @@ export function useOrderDetails(){
     return context
 }
 function calculateSubtotal(optionType, optionCounts){
-    console.log(optionCounts[optionType].values())
     let optionCount = 0
     for(const count of optionCounts[optionType].values()){
         optionCount += count
@@ -61,9 +54,16 @@ export function OrderDetailsProvider(props){
             setOptionCounts(newOptionCounts)
 
         }
+
+        function resetOrder(){
+            setOptionCounts({
+                scoops: new Map(),
+                toppings: new Map(),
+            });
+        }
         //getter: object containing option counts for scoops and toppings, subtotals and totals
         //setter: updateOptionCount
-        return [{...optionCounts, totals}, updateItemCount]
+        return [{...optionCounts, totals}, updateItemCount, resetOrder]
     },[optionCounts, totals])
     return (
         <OrderDetails.Provider value={value} {...props}/>

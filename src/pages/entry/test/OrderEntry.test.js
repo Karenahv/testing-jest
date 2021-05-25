@@ -12,7 +12,7 @@ test('handles errors for scoops and toopings routes', async ()=>{
             res(ctx.status(500))
         })
     )
-    render(<OrderEntry/>)
+    render(<OrderEntry setOrderPhase={jest.fn()}/>)
     await waitFor(async ()=>{
          const alerts = await screen.findAllByRole('alert')
          expect(alerts).toHaveLength(2)
